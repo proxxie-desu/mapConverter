@@ -306,6 +306,7 @@ function getTextBlocks(list) {
     let outBlocks = [];
     let currentBlock = [];
     for (let i = 0, l = list.length; i < l; i++) {
+        // If you encounter a header, start a new block and push the old
         if (list[i].code == 101) {
             if (currentBlock.length > 0) {
                 outBlocks.push(currentBlock);
@@ -321,6 +322,7 @@ function getTextBlocks(list) {
             } else {
                 badTextBlocks();
             }
+        // If you encounter anything other than header/text, start new block
         } else {
             if (currentBlock.length > 0) {
                 outBlocks.push(currentBlock);
