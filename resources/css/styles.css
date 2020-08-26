@@ -2,67 +2,42 @@
     text-align: center;
 }
 
-#inputContainer {
+#textOptionsContainer {
     border-style: solid;
-    margin: 2%;
-    padding: 10px;
-    width: 40%;
-    display: inline-block;
-    vertical-align: top;
-}
-
-.input {
-    padding: 10px;
-    margin: 10px;
-}
-
-#outputContainer {
-    border-style: solid;
-    margin: 2%;
-    padding: 10px;
-    width: 40%;
-    display: inline-block;
-    vertical-align: top;
+    border-radius: 10px;
+    padding: 1em;
+    text-align: center;
 }
 
 #macroContainer, #formatContainer {
     border-style: solid;
-    padding: 5px;
-    margin: 5px;
-}
-
-.macro {
-    display: grid;
-    grid-template-columns: 40% 40% 20%;
-    justify-content: space-evenly;
-    margin: 5px;
-}
-
-.macroIn {
-    grid-column: 1;
-}
-
-.macroOut {
-    grid-column: 2;
-}
-
-.macroName {
-    grid-column: 3;
-    text-align: center;
-    vertical-align: middle;
+    border-radius: 10px;
+    padding: 1em;
 }
 
 #macroHeader {
-    display: grid;
-    grid-template-columns: 40% 40% 20%;
-    justify-content: space-evenly;
+    font-weight: bold;
+}
+
+.macroIn, .macroOut {
+    width: 100%;
+}
+
+.macroName {
+    vertical-align: center;
+}
+
+.macroIn, .macroOut, .macroName, #macroHeader, #moreMacros {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
 
 #moreMacros {
-    float: right;
-    padding: 5px;
-    margin: 10px
+    width: 100%;
+}
 
+#aboutMacros, #aboutFormatting {
+    text-align: left;
 }
 
 #about {
@@ -71,4 +46,17 @@
 
 #resetContainer {
     text-align: center;
+}
+
+.title {
+    font-weight: bold;
+}
+
+#convertButton {
+    width: 100%;
+}
+
+#italicContainer, #boldContainer, #macroRadio {
+    text-align: left;
+    margin-left: 2em;
 }

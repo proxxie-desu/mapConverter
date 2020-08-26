@@ -1,0 +1,3 @@
+This utility converts MV map json files which had nameplates formatted for Yanfly's message core plugin (\n&lt;Name&gt;) to the new default format for nameplates in RPG Maker MZ. It also provides some conversion features for users of Yanfly's Message Macros plugin.
+<br><br>
+This utility will let you download a zip file containing  your converted maps. It <i>shouldn't</i> do anything to the map files you feed it, but still, <b>I highly recommend making backups of your original map files!</b> I take no responsibility for any legal, personal or temporal problems that should arise by using this utility, and by using it you agree that's cool.

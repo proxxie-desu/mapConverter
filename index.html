@@ -1,111 +1,234 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <script src="resources/js/FileSaver.min.js"></script>
-        <script src="resources/js/jszip.min.js"></script>
-        <script src="resources/js/scripts.js"></script>
-        <link rel="stylesheet" type="text/css" href="resources/css/styles.css">
-    </head>
-    <body>
-        <div id="pageTitle">
-            <h1>Map Converter: YEP Message Core Names to MZ (With Extras)</h1>
-            <p>By Proxxie</p>
-        </div>
-        <p id="about">This utility converts MV map json files which had nameplates formatted for Yanfly's message core 
-            plugin (\n&lt;Name&gt;) to the new default format for nameplates in RPG Maker MZ. It also provides some conversion 
-            features for users of Yanfly's Message Macros plugin.
-            <br><br>
-            This utility will let you download a zip file containing  your converted maps. It <i>shouldn't</i> do anything to 
-            the map files you feed it, but still, <b>I highly recommend making backups of your original map files!</b> I take no 
-            responsibility for any legal, personal or temporal problems that should arise by using this utility, and by using 
-            it you agree that's cool.
-            <br><br>
-            Notes:
-            <ul>
-                <li>This utility may not behave as expected if you used more than 4 lines per text box.</li>
-                <li>You can no longer change or select form fields once you hit 'Convert Files'. You'll need to reset if you 
-                    want to try again. If your macros are unusually numerous or complicated, you might want to enter them 
-                    into a text editor first.</li>
-                <li>If a single name/macro is split between different lines, this utility won't change it. But I'm not sure 
-                    Yanfly's plugins would have done anything in that case, anyway.
+
+<head>
+    <script src="resources/js/vendor/jquery-3.0.0.slim.min.js"></script>
+    <script src="resources/js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="resources/js/vendor/FileSaver.min.js"></script>
+    <script src="resources/js/vendor/jszip.min.js"></script>
+    <script src="resources/js/mapConverter.js"></script>
+    <link rel="stylesheet" type="text/css" href="resources/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="resources/css/styles.css">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <nav id="navbar" class="navbar navbar-light bg-light sticky-top">
+            <a class="navbar-brand" href="#">Map Converter</a>
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link" href="#mainButtonsContainer">Main Controls</a>
                 </li>
-            </ul> 
-        </p>
-        <div id="resetContainer">
-            <button type="button" id="resetButton" onclick="reload();">Reset</button>
-        </div>
-        <div id="inputContainer">
-            <span>Map files to convert (you'll find these in the 'data' folder):</span>
-            <input type="file" id="inputFiles" class="input" accept=".json" multiple>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                        aria-haspopup="true" aria-expanded="false">Text Options</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#formatContainer">Bold/Italic</a>
+                        <a class="dropdown-item" href="#macroContainer">Macros</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+
+        <div id="pageContent" data-spy="scroll" data-target="#navbar" data-offset="0">
+            <div id="pageTitle">
+                <h1>Map Converter: YEP Message Core Names to MZ (With Extras)</h1>
+                <p>By Proxxie</p>
+            </div>
+
+            <div class="container">
+                <p id="about" class="container">This utility converts MV map json files which had nameplates formatted
+                    for Yanfly's message core plugin (\n&lt;Name&gt;) to the new default format for nameplates in RPG Maker MZ. It also provides
+                    some conversion features for users of Yanfly's Message Macros plugin.
+                    <br><br>
+                    This utility will let you download a zip file containing your converted maps. It <i>shouldn't</i> do
+                    anything to the map files you feed it, but still, <b>I highly recommend making backups of your original map 
+                    files!</b> I take no
+                    responsibility for any legal, personal or temporal problems that should arise by using this utility,
+                    and by using it you agree that's cool.
+                    <br><br>
+                    Notes:
+                <ul>
+                    <li>This utility may not behave as expected if you used more than 4 lines per text box.</li>
+                    <li>You can no longer change or select form fields once you hit 'Convert Files'. You'll need to reset if
+                        you want to try again. If your macros are unusually numerous or complicated, you might want to enter
+                        them into a text editor first.
+                    </li>
+                    <li>If a single name/macro is split between different lines, this utility won't change it. But I'm
+                        not sure Yanfly's plugins would have done anything in that case, anyway.
+                    </li>
+                </ul>
+                </p>
+            </div>
             <br>
-            <p>Optional Stuff</p>
-            <div id="macroContainer">
-                <p style="display: inline-block;">Macro Replacements</p>
-                <button type="button" id="moreMacros" class="macroInput input" onclick="moreMacros();" disabled>More Macro Slots</button>
-                <p>Intended for use with text formatted using Yanfly's Message Macros plugin, this replaces one string with another in your text boxes. If 
-                    'Represents Name?' is checked, it will remove a matched string and place what you designate in MZ's name slot (both these effects only
-                    happen if something isn't already there). This latter part is intended to help if you used YEP macros to display nameplates. Note that you 
-                    can use these features to replace your YEP text macros with VisuStella-formatted ones. The matches are case sensitive.<br><br> I very much 
-                    encourage you to think carefully before using this. While very useful, if used improperly it has the potential to bork the output in ways 
-                    both subtle and spectacular.</p>
-                <div id="macroRadio">
-                    <input type="radio" class="input" id="macroDisabled" name="macroRadio" value="disabled" onchange="macroRadioChange();" checked>
-                    <label for="macroDisabled">Disable</label>
-                    <input type="radio" class="input" id="macroEnabled" name="macroRadio" value="enabled" onchange="macroRadioChange();">
-                    <label for="macroEnabled">Enable</label>
-                </div>
-                <br>
-                <div id="macroHeader">
-                    <span class="macroIn">String to Replace</span>
-                    <span class="macroOut">Replacement String</span>
-                    <span class="macroName">Represents Name?</span>
-                </div>
-                <div id="macroForms">
-                    <div class="macro">
-                        <div class="macroIn"><input type="text" class="input macroInput" name="macroIn" placeholder="String to replace" disabled/></div>
-                        <div class="macroOut"><input type="text" class="input macroInput" name="macroOut" placeholder="Replacement string" disabled/></div>
-                        <div class="macroName"><input type="checkbox" class="input macroInput" name="macroName" disabled/></div>
+            <div id="mainButtonsContainer" class="container">
+                <div class="row">
+                    <div id="fileInputContainer" class="col">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Map files to convert</span>
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" id="inputFiles" class="input custom-file-input" accept=".json"
+                                    multiple>
+                                <label class="custom-file-label" id="inFilesLabel" for="inputFiles">Choose files</label>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">You'll find these in the 'data' folder of your
+                            project.</small>
+                    </div>
+                    <div id="resetContainer" class="col">
+                        <button type="button" id="resetButton" class="btn btn-info"
+                            onclick="location.reload();">Reset</button>
+                    </div>
+                    <div id="outputContainer" class="col">
+                        <button type="button" id="downloadButton" class="btn btn-success" onclick="download();"
+                            disabled>Download converted files</button>
                     </div>
                 </div>
             </div>
-
-            <div id="formatContainer">
-                <p>Bold/Italic formatting<br><br>
-                    These options allow you to replace YEP-formatted bold and italics with VisuStella-formatted bold and italics. Note that this
-                    option is likely to throw a lot of errors (and stop the script from doing anything) if you were sloppy in your formatting. The 
-                    errors are useful in helping you track down where your problems are, though.</p>
-                <div id="italicContainer">
-                    <input type="radio" id="italicDisabled" class="input" name="italicRadio" checked>
-                    <label for="italicDisabled">Don't convert italics</label>
-                    <input type="radio" id="italicEnabled" class="input" name="italicRadio">
-                    <label for="italicEnabled">Convert italics</label>
-                </div>
-                <br>
-                <div id="boldContainer">
-                    <input type="radio" id="boldDisabled" class="input" name="boldRadio" checked>
-                    <label for="boldDisabled">Don't convert bold</label>
-                    <input type="radio" id="boldEnabled" class="input" name="boldRadio">
-                    <label for="boldEnabled">Convert bold</label>
-                </div>
-            </div>
-            
             <br>
-            <span>When you're ready:</span>
-            <button type="button" id="convertButton" class="input" onclick="convertFiles();">Convert Files</button>
-        </div>
-        <div id="outputContainer">
-            <p>Output files:</p>
-            <div id="outputList">
+            <div id="textOptionsContainer" class="container">
+                <p class="title">Text Options</p>
+
+                <div id="formatContainer" class="container">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="title">Bold/Italic formatting</p>
+                            <div id="italicContainer">
+                                <div class="form-check">
+                                    <input type="radio" id="italicDisabled" class="input form-check-input"
+                                        name="italicRadio" checked>
+                                    <label for="italicDisabled" class="form-check-label">Don't convert italics</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" id="italicEnabled" class="input form-check-input"
+                                        name="italicRadio">
+                                    <label for="italicEnabled" class="form-check-label">Convert italics</label>
+                                </div>
+                            </div>
+                            <br>
+                            <div id="boldContainer">
+                                <div class="form-check">
+                                    <input type="radio" id="boldDisabled" class="input form-check-input"
+                                        name="boldRadio" checked>
+                                    <label for="boldDisabled" class="form-check-label">Don't convert bold</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" id="boldEnabled" class="input form-check-input"
+                                        name="boldRadio">
+                                    <label for="boldEnabled" class="form-check-label">Convert bold</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-9" id="aboutFormatting">
+                            <p>These options allow you to replace YEP-formatted bold and italics with
+                                VisuStella-formatted
+                                bold
+                                and italics. Note that this
+                                option is likely to throw a lot of errors (and stop the script from doing anything) if
+                                you
+                                were
+                                sloppy in your formatting. The
+                                errors are useful in helping you track down where your problems are, though.</p>
+                        </div>
+                    </div>
+                </div><br>
+
+                <div id="macroContainer" class="container">
+                    <div class="row">
+                        <div class="col-sm-3 macroLeftCol">
+                            <p class="title">Macro Replacements</p>
+                            <br>
+                            <div id="macroRadio">
+                                <div class="form-check">
+                                    <input type="radio" class="input form-check-input" id="macroDisabled"
+                                        name="macroRadio" value="disabled" onchange="macroRadioChange();" checked>
+                                    <label for="macroDisabled" class="form-check-label">Disable</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" class="input form-check-input" id="macroEnabled"
+                                        name="macroRadio" value="enabled" onchange="macroRadioChange();">
+                                    <label for="macroEnabled" class="form-check-label">Enable</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-9">
+                            <p id="aboutMacros">Intended for use with text formatted using Yanfly's Message Macros
+                                plugin,
+                                this
+                                replaces one string with another in your text boxes. If
+                                'Represents Name?' is checked, it will remove a matched string and place what you
+                                designate
+                                in
+                                MZ's name slot (both these effects only
+                                happen if something isn't already there). This latter part is intended to help if you
+                                used
+                                YEP
+                                macros to display nameplates. Note that you
+                                can use these features to replace your YEP text macros with VisuStella-formatted ones.
+                                The
+                                matches are case sensitive.<br><br> I very much
+                                encourage you to think carefully before using this. While very useful, if used
+                                improperly it
+                                has
+                                the potential to bork the output in ways
+                                both subtle and spectacular.
+                            </p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="container">
+                        <div id="macroHeader" class="row">
+                            <div class="col-md-5">String to Replace</div>
+                            <div class="col-md-5">Replacement String</div>
+                            <div class="col-md-2">Represents Name?</div>
+                        </div>
+
+                        <div id="macroForms" class="container">
+                            <div class="row">
+                                <div class="col-md-5 macroIn"><input type="text" class="input macroInput form-control"
+                                        name="macroIn" placeholder="String to replace" disabled /></div>
+                                <div class="col-md-5 macroOut"><input type="text" class="input macroInput form-control"
+                                        name="macroOut" placeholder="Replacement string" disabled /></div>
+                                <div class="col-md-2 macroName"><input type="checkbox"
+                                        class="input macroInput form-check-input" name="macroName" disabled /></div>
+                            </div>
+                        </div>
+                        <button type="button" id="moreMacros" class="macroInput input btn btn-primary"
+                            onclick="moreMacros();" disabled>More Macro Slots</button>
+                    </div>
+                </div>
+
 
             </div>
-            <button type="button" id="downloadButton" onclick="download();" disabled>Download converted files</button>
+            <br>
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <button type="button" id="convertButton" class="input btn btn-success"
+                            onclick="convertFiles();">Convert
+                            Files</button>
+                    </div>
+                </div>
+
+            </div>
+            <br>
+            <div id="tou" class="container">
+                <b>Terms of Use</b>
+                <p>The Terms of Use of JSZip and FileSaver.js are governed by their respective licenses. This utility
+                    may be
+                    used
+                    and distributed freely, but it may not be sold, nor may my code be incorporated into any product for
+                    sale.
+                    If you
+                    fork or use this code in your free product, please credit me.
+                </p>
+            </div>
         </div>
-        <div id="tou">
-            <p>Terms of Use</p>
-            <p>The Terms of Use of JSZip and FileSaver.js are governed by their respective licenses. This utility may be used 
-                and distributed freely, but it may not be sold, nor may my code be incorporated into any product for sale. If you 
-                fork or use this code in your free product, please credit me.
-            </p>
-        </div>
-    </body>
+
+    </div>
+
+</body>
+
 </html>
